@@ -1,0 +1,49 @@
+
+# alloc drive
+qemu-img create -f qcow2 ubuntu20.qcow2 15G
+
+# install
+qemu-system-x86_64 -hda ubuntu20.qcow2 -boot d -cdrom ubuntu-20.04.1-live-server-amd64.iso -m 1G -machine q35 -accel kvm
+
+# install ubuntu
+sudo apt install qemu-kvm
+
+# install mac
+brew install qemu
+
+# install windows
+download and run prebuilt exe
+
+
+# shutdown
+shutdown -h 0
+
+# accounts
+steve: steve-1
+root: root-1
+
+# run
+qemu-system-x86_64 -hda ubuntu20.qcow2 -m 1G -machine q35 -accel kvm
+
+# on Mac
+-accel hcf
+
+# on windows
+# install HAXM driver
+-accel hax
+
+# virtualize hardware
+-cpu host,+avx512f
+-cpu IceLake-Client
+
+
+# setup ssh connection
+-device e1000,netdev=net0
+-netdev user,id=net0,hostfwd=tcp::5555-:22
+# then connect via
+ssh steve@localhost -p 5555
+
+# links
+https://wiki.gentoo.org/wiki/QEMU/Options
+https://wiki.archlinux.org/index.php/QEMU
+https://en.wikibooks.org/wiki/QEMU/Images
