@@ -10,11 +10,11 @@ section .text
 main:
     add rsp, -8     ; need to align the stack
 
-    mov rdi, msg    ; we can print regualr strings
+    mov rdi, msg    ; we can print regular strings
     xor rax, rax
     call printf
 
-    mov rdi, msg2   ; but now we have something more advamnced as well
+    mov rdi, msg2   ; but now we have something more advanced as well
     mov rsi, 37
     xor rax, rax
     call printf
