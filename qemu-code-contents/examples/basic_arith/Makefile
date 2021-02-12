@@ -7,7 +7,7 @@ LDFLAGS+=
 ASM_SOURCES= $(wildcard *.asm)
 OBJECTS= $(patsubst %.asm,%.o,$(ASM_SOURCES))
 
-TARGET= hello.out
+TARGET= arith.out
 
 .PHONY: all
 all: $(TARGET)

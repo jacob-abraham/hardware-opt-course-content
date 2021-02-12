@@ -1,12 +1,12 @@
 CC= clang
 AS= nasm
-LD= ld
+LD= clang
 
-CFLAGS+= -Wall -Wextra -g -O3
+CFLAGS+= -Wall -Wextra -g -O3 -fno-vectorize -fno-inline-functions
 CFLAGS+= -msse -mfma -mavx -mavx2
-CFLAGS+= -arch x86_64
+CFLAGS+= -mllvm --x86-asm-syntax=intel
 
-LDFLAGS+= -arch x86_64
+LDFLAGS+= 
 
 ASFLAGS+= -felf64
 

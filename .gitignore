@@ -2,4 +2,5 @@
 .DS_Store
 *.d
 *.o
-*out
+*.out
+*.qcow2

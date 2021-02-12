@@ -1,5 +1,5 @@
 AS= nasm
-LD= ld
+LD= clang
 
 ASFLAGS+= -felf64
 LDFLAGS+= 
