@@ -11,7 +11,7 @@ _start:
     mov al, [alen]                  ; load the array length
     mov rcx, 0                      ; init counter
     loop_top: 
-        cmp rax, rcx                ; ZF will equal 1 when rounter reaches the length
+        cmp rax, rcx                ; ZF will equal 1 when counter reaches the length
         je loop_end
 
         test byte [array + rcx], 1  ; bitwise AND to check if even, ZF=1 when even
