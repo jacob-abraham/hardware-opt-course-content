@@ -4,6 +4,9 @@
 #include "timing.h"
 #include "../dataset.h"
 
+//if compiled without -mpopcnt, throws error
+//better than the raw builtin, which will just emit the assembly emulating popcnt
+//which is 2x slower
 uint8_t popcnt(uint64_t x) {
     uint8_t count;
     count = (uint8_t)_mm_popcnt_u64(x);
