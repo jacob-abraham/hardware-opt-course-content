@@ -1,13 +1,13 @@
 
 
 
-global popcnt_asm
+global cntsetbits_asm
 
 
 section .text
 
 ; rdi=x
-popcnt_asm:
+cntsetbits_asm:
 
     popcnt rax, rdi
 

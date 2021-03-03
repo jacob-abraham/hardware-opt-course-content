@@ -4,7 +4,6 @@ LD= clang
 
 CFLAGS+= -Wall -Wextra -g -O3
 CFLAGS+= -mllvm --x86-asm-syntax=intel
-CFLAGS+= -fno-vectorize -fno-inline-functions
 
 ASFLAGS+= -felf64
 LDFLAGS+= 
@@ -18,7 +17,7 @@ INCLUDE= -I../../../timing
 DEPENFLAGS+= -MMD -MP
 DEPENDS= $(patsubst %.c,%.d,$(SOURCES))
 
-TARGET= popcnt.out
+TARGET= cntsetbits.out
 
 .PHONY: all
 all: $(TARGET)

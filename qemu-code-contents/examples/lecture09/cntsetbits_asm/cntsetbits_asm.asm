@@ -1,19 +1,19 @@
 
 
 
-global popcnt_asm
+global cntsetbits_asm
 
 
 section .text
 
 ; rdi=x
-popcnt_asm:
+cntsetbits_asm:
 
     mov rax, 0     ; we will keep our count here
     
     xor cl, cl
 
-popcnt_loop:
+cntsetbits_loop:
 
     inc cl
 
@@ -24,6 +24,6 @@ popcnt_loop:
     shr rdi, 1        ; move to next bit
 
     cmp cl, 64
-    jl popcnt_loop
+    jl cntsetbits_loop
 
     ret
