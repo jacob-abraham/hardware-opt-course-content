@@ -4,9 +4,9 @@
 #include "../dataset.h"
 
 uint8_t cntsetbits(uint64_t x) {
-    uint64_t count;
-    asm volatile ( "popcntq %0, %1 \n" : "=r"(count) : "r"(x) : "cc" );
-    return (uint8_t)count;
+    uint8_t count;
+    count = __builtin_popcountll(x);
+    return count;
 }
 
 int main(int argc, char **argv) {

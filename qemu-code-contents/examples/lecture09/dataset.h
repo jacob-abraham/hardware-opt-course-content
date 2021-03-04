@@ -189,7 +189,7 @@ void test(uint8_t (*func)(uint64_t)) {
 }
 
 #define SAMPLE_SIZE 50
-void benchmark(uint8_t (*func)(uint64_t)) {
+__attribute((__noinline__)) void benchmark(uint8_t (*func)(uint64_t)) {
 
     float *times = (float *)malloc(SAMPLE_SIZE * sizeof(float));
     float mean;
@@ -200,6 +200,7 @@ void benchmark(uint8_t (*func)(uint64_t)) {
     __VARIANCE(SAMPLE_SIZE, times, var);
 
     printf("Mean: %5.4fms Variance: %5.4fms\n", mean, var);
+    #ifdef PRINT_ALL_NUMS
     size_t row_length = 5;
     for(size_t i = 0; i < SAMPLE_SIZE;) {
         for(size_t j = 0; j < row_length && (j + i) < SAMPLE_SIZE; j++) {
@@ -208,6 +209,7 @@ void benchmark(uint8_t (*func)(uint64_t)) {
         i += row_length;
         printf("\n");
     }
+    #endif
     free(times);
 }
 

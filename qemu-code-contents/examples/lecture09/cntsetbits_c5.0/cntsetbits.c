@@ -1,19 +1,19 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <immintrin.h>
 #include "timing.h"
 #include "../dataset.h"
 
-
+//if compiled without -mpopcnt, throws error
+//better than the raw builtin, which will just emit the assembly emulating popcnt
+//which is 2x slower
 uint8_t cntsetbits(uint64_t x) {
-    uint8_t count = 0;
-    while(x) {
-        count++;
-        x = x & (x-1);
-    }
+    uint8_t count;
+    count = (uint8_t)_mm_popcnt_u64(x);
     return count;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     uint64_t num;
     uint8_t count;

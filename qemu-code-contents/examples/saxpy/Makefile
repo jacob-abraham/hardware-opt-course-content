@@ -2,9 +2,9 @@ CC= clang
 AS= nasm
 LD= clang
 
-CFLAGS+= -Wall -Wextra -g -O3 -fno-vectorize -fno-inline-functions
-CFLAGS+= -msse -mfma -mavx -mavx2
-CFLAGS+= -mllvm --x86-asm-syntax=intel
+override CFLAGS+= -Wall -Wextra -g -O3 -fno-tree-vectorize -fno-inline-functions
+override CFLAGS+= -msse -mfma -mavx -mavx2
+override CFLAGS+= -masm=intel
 
 LDFLAGS+= 
 

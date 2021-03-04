@@ -2,8 +2,8 @@ CC= clang
 AS= nasm
 LD= clang
 
-CFLAGS+= -Wall -Wextra -g -O3
-CFLAGS+= -mllvm --x86-asm-syntax=intel
+override CFLAGS+= -Wall -Wextra -g -O3
+override CFLAGS+= -masm=intel
 
 ASFLAGS+= -felf64
 LDFLAGS+= 
