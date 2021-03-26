@@ -1,5 +1,6 @@
 
 global saxpy_asm
+global saxpy_bad_asm
 global saxpy_asm_sse
 
 
@@ -25,9 +26,38 @@ loop_saxpy:
     loop_unroll xmm1, 0
     loop_unroll xmm2, 4
 
+    %unmacro loop_unroll 2
+
     add rax, 2
     jmp loop_saxpy
 done_saxpy:
+    ret
+
+; rdi=*a, rsi=*x, rdx=*y, rcx=*r, r8=n
+saxpy_bad_asm:
+
+    movss xmm0, [rdi]     ;load scalar
+    mov rax, 0     ;load loop counter
+    
+loop_saxpy_bad:
+    cmp rax, r8      ;cmp to size
+    jae done_saxpy_bad
+
+    %macro loop_unroll 2
+    movss %1, xmm0 ; move scalar
+    mulss %1, [rsi + 4*rax + %2]  ; multiply by x
+    addss %1, [rdx + 4*rax + %2] ; add y
+    movss [rcx + 4*rax + %2], %1 ; copy to r
+    %endmacro
+
+    loop_unroll xmm1, 0
+    loop_unroll xmm2, 4
+
+    %unmacro loop_unroll 2
+
+    add rax, 2
+    jmp loop_saxpy_bad
+done_saxpy_bad:
     ret
 
 

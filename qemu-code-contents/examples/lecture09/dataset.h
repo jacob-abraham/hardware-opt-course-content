@@ -182,35 +182,12 @@ uint64_t random_ints[N_DATASET] = {
         441744352442802317, 359444541241529400
 };
 
-void test(uint8_t (*func)(uint64_t)) {
+void* test(void* arg) {
+    uint8_t (*func)(uint64_t) = (uint8_t (*)(uint64_t))arg;
     for(size_t i = 0; i < N_DATASET; i++) {
         func(random_ints[i]);
     }
-}
-
-#define SAMPLE_SIZE 50
-__attribute((__noinline__)) void benchmark(uint8_t (*func)(uint64_t)) {
-
-    float *times = (float *)malloc(SAMPLE_SIZE * sizeof(float));
-    float mean;
-    float var;
-
-    __TIME_IT_N(test(func), 1000, SAMPLE_SIZE, times);
-    __MEAN(SAMPLE_SIZE, times, mean);
-    __VARIANCE(SAMPLE_SIZE, times, var);
-
-    printf("Mean: %5.4fms Variance: %5.4fms\n", mean, var);
-    #ifdef PRINT_ALL_NUMS
-    size_t row_length = 5;
-    for(size_t i = 0; i < SAMPLE_SIZE;) {
-        for(size_t j = 0; j < row_length && (j + i) < SAMPLE_SIZE; j++) {
-            printf("%5.4fms\t", times[j + i]);
-        }
-        i += row_length;
-        printf("\n");
-    }
-    #endif
-    free(times);
+    return NULL;
 }
 
 #endif

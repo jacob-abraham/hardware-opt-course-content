@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         count = cntsetbits_asm(num);
         printf("There are %hhu 1's in %lu\n", count, num);
     }
-    benchmark(cntsetbits_asm);
+    benchmark(test, (void*)cntsetbits_asm, 50, 1000, 0b01, NULL);
 
     return 0;
 }

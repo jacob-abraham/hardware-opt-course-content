@@ -8,11 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-// this is carefully crafted to be exactly 64 bytes, which is aligned
+// this is carefully crafted to be exactly 16 bytes, which is aligned
+//ORDER MATTERS
+//architecture matters (on 64bit, pointers are 8 bytes)
 struct ll_node {
-    char large_string[50];
-    int32_t some_number;
     struct ll_node *next;
+    int32_t some_number;
+    char some_string[4];
 };
 
 #define NULL_CHECK(__CHECK)                                                    \
@@ -35,7 +37,7 @@ __attribute((__noinline__)) void init_list(struct ll_node **head, void *(*alloc)
 __attribute((__noinline__)) struct ll_node *construct_node(void *(*alloc)(size_t), char *str, int32_t num) {
     struct ll_node *newNode = (struct ll_node *)alloc(sizeof(struct ll_node));
     newNode->next = NULL;
-    strncpy(newNode->large_string, str, 40);
+    strncpy(newNode->some_string, str, 4);
     newNode->some_number = num;
     return newNode;
 }

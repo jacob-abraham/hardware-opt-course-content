@@ -1,12 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <immintrin.h>
 #include "timing.h"
 #include "../dataset.h"
 
+//if compiled without -mpopcnt, throws error
+//better than the raw builtin, which will just emit the assembly emulating popcnt
+//which is 2x slower
 uint8_t cntsetbits(uint64_t x) {
-    uint64_t count;
-    asm volatile ( "popcntq %0, %1 \n" : "=r"(count) : "r"(x) : "cc" );
-    return (uint8_t)count;
+    uint8_t count;
+    count = (uint8_t)_mm_popcnt_u64(x);
+    return count;
 }
 
 int main(int argc, char **argv) {
@@ -18,7 +22,7 @@ int main(int argc, char **argv) {
         count = cntsetbits(num);
         printf("There are %hhu 1's in %lu\n", count, num);
     }
-    benchmark(cntsetbits);
+    benchmark(test, (void*)cntsetbits, 50, 1000, 0b01, NULL);
 
     return 0;
 }

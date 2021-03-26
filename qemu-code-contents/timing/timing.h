@@ -2,6 +2,8 @@
 #ifndef __PERF_H__
 #define __PERF_H__
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <x86intrin.h>
 
@@ -23,17 +25,6 @@
         clock_gettime(CLOCK_MONOTONIC, &__end);                                \
         __TIME = __TIMESPEC_TO_MS(__end) - __TIMESPEC_TO_MS(__start);          \
     }
-
-/*
-#define __TIME_IT(__FUNC, __TIME)                                              \
-    {                                                                          \
-        __int64_t __start, __end;                                              \
-        __start = _rdtsc();                                                    \
-        __LOOP(1000, __FUNC;);                                                 \
-        __end = _rdtsc();                                                      \
-        __TIME = (float)(__end - __start);                                     \
-    }
-    */
 
 #define __TIME_IT_PRINT(__FUNC, __LOOP_COUNT)                                  \
     {                                                                          \
@@ -68,5 +59,42 @@
         }                                                                      \
         __V = __V / (__N - 1);                                                 \
     }
+
+// print options: 00 no print, 01 print mean/variance, 10 print all times, 11
+// print both for 'return_times', only return if pointer is non null
+__attribute((__noinline__)) void benchmark(void *(*func)(void *), void *args,
+                                           size_t sample_size,
+                                           size_t loop_count, int print_flags,
+                                           float **return_times) {
+
+    float *times = (float *)malloc(sample_size * sizeof(float));
+    float mean;
+    float var;
+
+    __TIME_IT_N(func(args), loop_count, sample_size, times);
+    __MEAN(sample_size, times, mean);
+    __VARIANCE(sample_size, times, var);
+
+    if(print_flags & 1)
+        printf("Mean: %7.4fms Variance: %7.4fms\n", mean, var);
+    if(print_flags & 2) {
+        size_t row_length = 5;
+        for(size_t i = 0; i < sample_size;) {
+            for(size_t j = 0; j < row_length && (j + i) < sample_size; j++) {
+                printf("%7.4fms\t", times[j + i]);
+            }
+            i += row_length;
+            printf("\n");
+        }
+    }
+
+    //if we dont want the times, free it
+    if(return_times != NULL) {
+        *return_times = times;
+    }
+    else {
+        free(times);
+    }
+}
 
 #endif

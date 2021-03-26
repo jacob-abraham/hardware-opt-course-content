@@ -3,17 +3,13 @@
 #include "timing.h"
 #include "../dataset.h"
 
-
 uint8_t cntsetbits(uint64_t x) {
-    uint8_t count = 0;
-    while(x) {
-        count++;
-        x = x & (x-1);
-    }
+    uint8_t count;
+    count = __builtin_popcountll(x);
     return count;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     uint64_t num;
     uint8_t count;
@@ -22,7 +18,7 @@ int main(int argc, char** argv) {
         count = cntsetbits(num);
         printf("There are %hhu 1's in %lu\n", count, num);
     }
-    benchmark(cntsetbits);
+    benchmark(test, (void*)cntsetbits, 50, 1000, 0b01, NULL);
 
     return 0;
 }

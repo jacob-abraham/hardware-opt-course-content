@@ -1,3 +1,3 @@
 #!/bin/sh
 
-taskset -c 0 ./saxpy
+taskset -c 0 ./saxpy.out
