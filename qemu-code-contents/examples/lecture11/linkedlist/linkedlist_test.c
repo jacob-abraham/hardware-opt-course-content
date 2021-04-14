@@ -38,7 +38,7 @@ __attribute((__noinline__))  char* setup_unpacked_rand(size_t amount) {
     srand(time(NULL));
     char* dummy;
     for(size_t i = 0; i < LL_SIZE; i++) {
-        dummy = (char*)((uint64_t)dummy + (uint64_t)malloc(rand()%amount)); //simulate other allocations
+        dummy = (char*)((uint64_t)dummy + (uint64_t)(rand()%amount)); //simulate other allocations
         insert_node(&ll_head, construct_node(malloc, "ABC", 37));
     }
     return dummy;
@@ -61,6 +61,7 @@ int main(__attribute((unused)) int argc, __attribute((unused)) char** argv) {
     #endif
 
     #ifdef _UNPACKED_RAND_
+    srand(time(NULL));
     if(argc < 2) {printf("Missing Args\n"); exit(1);};
     size_t amount = atoll(argv[1]);
     printf("UnPacked by rand%%%3zu Traversal: ", amount);

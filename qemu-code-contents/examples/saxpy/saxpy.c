@@ -118,22 +118,19 @@ void *saxpy_fma256(void *arg) {
 int main() {
 
     size_t n = 1024 * 4; // each array is a 1/4 page
-    float *a = (float *)malloc(sizeof(float));
+    float *a = (float *)aligned_alloc(64, sizeof(float));
     *a = 1 + rand() / (1 + rand() % 300);
 
     // cannot be freed
-    float *x =
-        (float *)((uintptr_t)~63 & (uintptr_t)malloc(63 + n * sizeof(float)));
-    float *y =
-        (float *)((uintptr_t)~63 & (uintptr_t)malloc(63 + n * sizeof(float)));
+    float *x = (float *)aligned_alloc(64, n * sizeof(float));
+    float *y = (float *)aligned_alloc(64, n * sizeof(float));
 
     for(size_t i = 0; i < n; i++) {
-        *x = 1 + rand() / (1 + rand() % 200);
-        *y = 1 + rand() / (1 + rand() % 200);
+        x[i] = 1 + rand() / (1 + rand() % 200);
+        y[i] = 1 + rand() / (1 + rand() % 200);
     }
 
-    float *r =
-        (float *)((uintptr_t)~63 & (uintptr_t)malloc(63 + n * sizeof(float)));
+    float *r = (float *)aligned_alloc(64, n * sizeof(float));
 
     struct test_args arg = {.n = n, .a = a, .x = x, .y = y, .r = r};
 
