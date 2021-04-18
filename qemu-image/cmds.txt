@@ -43,6 +43,12 @@ qemu-system-x86_64 -hda ubuntu20.qcow2 -m 1G -machine q35 -accel kvm
 # then connect via
 ssh steve@localhost -p 5555
 
+# generate ssh key
+ssh-keygen -f id_rsa -C noname
+# copy to qemu
+cat id_rsa.pub | ssh -p 5555 steve@localhost "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >>  ~/.ssh/authorized_keys"
+# use with -i
+
 # links
 https://wiki.gentoo.org/wiki/QEMU/Options
 https://wiki.archlinux.org/index.php/QEMU

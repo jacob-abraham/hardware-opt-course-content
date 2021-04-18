@@ -68,9 +68,14 @@ emulate_hadd_1:
     %endif
 
     ; A  B  C  D
+    ;     +
     ; C  D  A  B
+    ;     =
     ; AC BD CA DB
+    ;     +
     ; DB CA BD AC
+    ;     =
+    ; ACDB BDCA CABD DBAC
 
     movaps xmm1, xmm0            ; 0/1, 0.25
     shufps xmm1, xmm0, 01001110b ; 1  , 1
@@ -107,11 +112,21 @@ emulate_hadd_2:
     movaps xmm0, xmm2
     %endif
 
+    ; A  B  C  D
+    ;     +
+    ; B  B  D  D
+    ;     =
+    ; AB BB CD DD
+    ;     +
+    ; CD DD AB BB 
+    ;     =
+    ; ABCD BBDD CDAB DDBB
+
     movshdup xmm1,xmm0 ; 1, 1
     addps xmm0, xmm1   ; 4, 0.5
     movhlps xmm1, xmm0 ; 1, 1
     addss xmm0, xmm1   ; 4, 0.5
-                       ; 12
+                       ; 10
 
     %ifdef BENCHMARK
     loopne emulate_hadd_2.looptop
