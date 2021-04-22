@@ -1,14 +1,13 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "timing.h"
 #include "../dataset.h"
-
+#include "timing.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 uint8_t cntsetbits(uint64_t x) {
     uint8_t count = 0;
     while(x) {
         count++;
-        x = x & (x-1);
+        x = x & (x - 1);
     }
     return count;
 }

@@ -10,18 +10,18 @@
 #include "timing.h"
 
 struct test_args {
-    float *a;
-    float *b;
-    float *result;
+    float* a;
+    float* b;
+    float* result;
     size_t n;
 };
 #define UNPACK_ARGS(ARGS)                                                      \
-    float *a = ((struct test_args *)ARGS)->a;                                  \
-    float *b = ((struct test_args *)ARGS)->b;                                  \
-    float *result = ((struct test_args *)ARGS)->result;                        \
-    size_t n = ((struct test_args *)ARGS)->n;
+    float* a = ((struct test_args*)ARGS)->a;                                   \
+    float* b = ((struct test_args*)ARGS)->b;                                   \
+    float* result = ((struct test_args*)ARGS)->result;                         \
+    size_t n = ((struct test_args*)ARGS)->n;
 
-void *scalar_dp(void *arg) {
+void* scalar_dp(void* arg) {
     UNPACK_ARGS(arg)
     float sum = 0;
     for(size_t i = 0; i < n; i++) {
@@ -30,7 +30,7 @@ void *scalar_dp(void *arg) {
     *result = sum;
     return NULL;
 }
-void *vector_dp(void *arg) {
+void* vector_dp(void* arg) {
     UNPACK_ARGS(arg)
     float sum1 = 0;
     float sum2 = 0;
@@ -55,7 +55,7 @@ void *vector_dp(void *arg) {
     return NULL;
 }
 
-void *vector_dp_fma(void *arg) {
+void* vector_dp_fma(void* arg) {
     UNPACK_ARGS(arg)
     __m128 temp1, temp2, temp3, temp4;
     temp1 = temp2 = temp3 = temp4 = _mm_set_ps1(0);
@@ -88,17 +88,18 @@ void *vector_dp_fma(void *arg) {
 #define rand_range_int(low, high) low + rand() % (high + 1 - low)
 #define rand_range_float(low, high) (float)(rand_range_int(low, high))
 
-int main(__attribute((unused)) int argc, __attribute((unused)) char **argv) {
+int main(__attribute((unused)) int argc, __attribute((unused)) char** argv) {
 
     srand(time(NULL));
 
     size_t n = 1024 * 4; // each array is a 1/4 page
 
-    float *result = (float *)aligned_alloc(64, n * sizeof(float));
-    float *a = (float *)aligned_alloc(64, n * sizeof(float));
-    float *b = (float *)aligned_alloc(64, n * sizeof(float));
+    // float *result = (float *)aligned_alloc(64, sizeof(float));
+    float result;
+    float* a = (float*)aligned_alloc(64, n * sizeof(float));
+    float* b = (float*)aligned_alloc(64, n * sizeof(float));
 
-    struct test_args arg = {.a = a, .b = b, .result = result, .n = n};
+    struct test_args arg = {.a = a, .b = b, .result = &result, .n = n};
 
     for(size_t i = 0; i < n; i++) {
         a[i] = rand_range_float(1, 200);
@@ -109,25 +110,21 @@ int main(__attribute((unused)) int argc, __attribute((unused)) char **argv) {
     }*/
 
     printf("Scalar DP    : ");
-    benchmark(scalar_dp, (void *)(&arg), 50, 5000, 0b01, NULL);
+    benchmark(scalar_dp, (void*)(&arg), 50, 5000, 0b01, NULL);
     printf("Vector DP    : ");
-    benchmark(vector_dp, (void *)(&arg), 50, 5000, 0b01, NULL);
+    benchmark(vector_dp, (void*)(&arg), 50, 5000, 0b01, NULL);
     printf("Vector DP FMA: ");
-    benchmark(vector_dp_fma, (void *)(&arg), 50, 5000, 0b01, NULL);
+    benchmark(vector_dp_fma, (void*)(&arg), 50, 5000, 0b01, NULL);
 
     // accuracy check
     printf("\nAccuracy\n");
-    scalar_dp((void *)(&arg));
+    scalar_dp((void*)(&arg));
     float s_dp = *(arg.result);
     printf("S   : vsum=%16.6f\n", s_dp);
-    vector_dp((void *)(&arg));
+    vector_dp((void*)(&arg));
     float v_dp = *(arg.result);
     printf("VDP : vsum=%16.6f\n", v_dp);
-    vector_dp_fma((void *)(&arg));
+    vector_dp_fma((void*)(&arg));
     float v_dp_fma = *(arg.result);
     printf("VFMA: vsum=%16.6f\n", v_dp_fma);
-
-    // is this diff acceptable?
-    float diff = ((v_dp_fma - v_dp) / v_dp) * 100;
-    printf("Diff: %7.4f\n", diff);
 }

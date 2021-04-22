@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "timing.h"
 #include "../dataset.h"
+#include "timing.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 uint8_t cntsetbits(uint64_t x) {
     uint8_t count;
@@ -9,7 +9,7 @@ uint8_t cntsetbits(uint64_t x) {
     return count;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 
     uint64_t num;
     uint8_t count;

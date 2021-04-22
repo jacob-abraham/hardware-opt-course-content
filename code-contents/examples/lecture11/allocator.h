@@ -3,9 +3,8 @@
 #ifndef _ALLOCATOR_H_
 #define _ALLOCATOR_H_
 
-#include <stdlib.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 
 void* allocator_base_ptr;
 void* allocator_ptr;
@@ -27,9 +26,8 @@ void* allocate(size_t bytes) {
     return ptr;
 }
 
-__attribute((__always_inline__))void* malloc64(size_t n) {
+__attribute((__always_inline__)) void* malloc64(size_t n) {
     return aligned_alloc(64, n);
 }
-
 
 #endif

@@ -1,8 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "timing.h"
 #include "../dataset.h"
-
+#include "timing.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 uint8_t cntsetbits(uint64_t x) {
     uint8_t count = 0;
