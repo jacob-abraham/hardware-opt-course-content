@@ -4,7 +4,7 @@ LD= clang
 
 override CFLAGS+= -Wall -Wextra -g -O3
 override CFLAGS+= -masm=intel
-override CFLAGS+= -msse -msse2 -mavx -mavx2 -mfma
+override CFLAGS+= 
 
 override ASFLAGS+= -felf64
 LDFLAGS+= 

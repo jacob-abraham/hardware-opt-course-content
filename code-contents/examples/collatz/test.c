@@ -1,21 +1,14 @@
-
-#include <immintrin.h>
+#include "timing.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
-#include "timing.h"
+__attribute__((__noinline__)) unsigned long collatz_c(unsigned long n) {
+    unsigned long c = 0; // should be 1, 1 converges in 1 step
 
-struct test_args {
-    long* n;
-    long* c;
-};
+    // n == 0 is invalid, will cause an infinite loop
+    // not apart of the original problem
 
-void collatz_c(void* arg) {
-    long n = *(((struct test_args*)arg)->n);
-    long c = 0;
     while(n != 1) {
         if(n % 2 == 0)
             n = n / 2;
@@ -23,26 +16,47 @@ void collatz_c(void* arg) {
             n = 3 * n + 1;
         c++;
     }
-    *(((struct test_args*)arg)->c) = c;
+    return c;
+}
+unsigned long collatz_asm(unsigned long args);
+unsigned long collatz_cmov(unsigned long args);
+unsigned long collatz_bsf(unsigned long args);
+unsigned long collatz_lea(unsigned long args);
+
+void* collatz_bench(void* arg) {
+    unsigned long (*func)(unsigned long) = (unsigned long (*)(unsigned long))arg;
+    for(unsigned long i = 1; i < 50000; i++) {
+        func(i);
+    } 
     return NULL;
 }
-void* hardware_hadd(void* args);
-void* emulate_hadd_1(void* args);
-void* emulate_hadd_2(void* args);
 
 int main(__attribute((unused)) int argc, __attribute((unused)) char** argv) {
 
-    long n;
-    ;
-    long c;
-    struct test_args arg = {.n = &n, .c = &c};
-
-    printf("collatz_c  : ");
-    benchmark(collatz_c, (void*)(&arg), 50, 1000, 0b01, NULL);
+    printf("collatz_c    : ");
+    benchmark(collatz_bench, (void*)collatz_c, 50, 50, 0b01, NULL);
+    printf("collatz_asm  : ");
+    benchmark(collatz_bench, (void*)collatz_asm, 50, 50, 0b01, NULL);
+    printf("collatz_cmov : ");
+    benchmark(collatz_bench, (void*)collatz_cmov, 50, 50, 0b01, NULL);
+    printf("collatz_bsf  : ");
+    benchmark(collatz_bench, (void*)collatz_bsf, 50, 50, 0b01, NULL);
+    printf("collatz_lea  : ");
+    benchmark(collatz_bench, (void*)collatz_lea, 50, 50, 0b01, NULL);
 
     // accuracy check
-    collatz_c((void*)(&arg));
-    printf("collatz_c : %d\n", c);
-
-#endif
+    unsigned long n;
+    unsigned long c;
+    n = 27;
+    printf("\nAccuracy\n");
+    c = collatz_c(n);
+    printf("collatz_c    : %6lu converges in %6lu\n", n, c);
+    c = collatz_asm(n);
+    printf("collatz_asm  : %6lu converges in %6lu\n", n, c);
+    c = collatz_cmov(n);
+    printf("collatz_cmov : %6lu converges in %6lu\n", n, c);
+    c = collatz_bsf(n);
+    printf("collatz_bsf  : %6lu converges in %6lu\n", n, c);
+    c = collatz_lea(n);
+    printf("collatz_lea  : %6lu converges in %6lu\n", n, c);
 }
